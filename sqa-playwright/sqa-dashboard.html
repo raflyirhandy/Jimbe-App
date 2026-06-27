@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Jimbe SQA Dashboard</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0f0f13;
+      color: #e2e8f0;
+      min-height: 100vh;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #FF6D00 0%, #FF8F00 50%, #FFB300 100%);
+      padding: 32px 40px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      box-shadow: 0 4px 30px rgba(255,109,0,0.4);
+    }
+
+    .header-icon { font-size: 48px; }
+
+    .header-info h1 {
+      font-size: 32px;
+      font-weight: 800;
+      color: white;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    .header-info p {
+      font-size: 14px;
+      color: rgba(255,255,255,0.85);
+      margin-top: 4px;
+    }
+
+    .badge {
+      margin-left: auto;
+      background: rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 999px;
+      padding: 8px 20px;
+      font-size: 13px;
+      font-weight: 600;
+      color: white;
+      backdrop-filter: blur(10px);
+    }
+
+    .container { padding: 32px 40px; }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .summary-card {
+      background: #1a1a24;
+      border: 1px solid #2a2a3a;
+      border-radius: 16px;
+      padding: 24px;
+      text-align: center;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .summary-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+
+    .summary-card .count {
+      font-size: 42px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .summary-card .label {
+      font-size: 13px;
+      color: #94a3b8;
+      margin-top: 8px;
+      font-weight: 500;
+    }
+
+    .card-total .count  { color: #94a3b8; }
+    .card-pass .count   { color: #22c55e; }
+    .card-fail .count   { color: #ef4444; }
+    .card-warn .count   { color: #f59e0b; }
+
+    .section-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #f1f5f9;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #2a2a3a;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .test-group { margin-bottom: 32px; }
+
+    .test-item {
+      background: #1a1a24;
+      border: 1px solid #2a2a3a;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+
+    .test-item:hover { border-color: #FF6D00; }
+
+    .test-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 20px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .status-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .dot-pass { background: #22c55e; box-shadow: 0 0 8px #22c55e; }
+    .dot-fail { background: #ef4444; box-shadow: 0 0 8px #ef4444; }
+    .dot-warn { background: #f59e0b; box-shadow: 0 0 8px #f59e0b; }
+    .dot-info { background: #3b82f6; box-shadow: 0 0 8px #3b82f6; }
+
+    .test-name {
+      flex: 1;
+      font-size: 14px;
+      font-weight: 600;
+      color: #e2e8f0;
+    }
+
+    .test-badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .badge-pass { background: rgba(34,197,94,0.15); color: #22c55e; border: 1px solid rgba(34,197,94,0.3); }
+    .badge-fail { background: rgba(239,68,68,0.15); color: #ef4444; border: 1px solid rgba(239,68,68,0.3); }
+    .badge-warn { background: rgba(245,158,11,0.15); color: #f59e0b; border: 1px solid rgba(245,158,11,0.3); }
+    .badge-info { background: rgba(59,130,246,0.15); color: #3b82f6; border: 1px solid rgba(59,130,246,0.3); }
+
+    .test-details {
+      padding: 0 20px 16px;
+      border-top: 1px solid #2a2a3a;
+      display: none;
+    }
+
+    .test-details.open { display: block; }
+
+    .detail-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+      font-size: 13px;
+    }
+
+    .detail-label {
+      color: #64748b;
+      font-weight: 500;
+      min-width: 120px;
+    }
+
+    .detail-value {
+      color: #94a3b8;
+      font-family: 'Courier New', monospace;
+      word-break: break-all;
+    }
+
+    .detail-value.success { color: #22c55e; }
+    .detail-value.error   { color: #ef4444; }
+    .detail-value.warn    { color: #f59e0b; }
+
+    pre.response-body {
+      background: #0d0d18;
+      border: 1px solid #2a2a3a;
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 12px;
+      color: #94a3b8;
+      overflow-x: auto;
+      margin-top: 10px;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .toggle-arrow {
+      font-size: 18px;
+      color: #64748b;
+      transition: transform 0.2s;
+    }
+
+    .test-item.open .toggle-arrow { transform: rotate(180deg); }
+
+    .footer {
+      text-align: center;
+      padding: 32px;
+      color: #475569;
+      font-size: 12px;
+      border-top: 1px solid #2a2a3a;
+    }
+
+    .loading-spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid #334155;
+      border-top-color: #FF6D00;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-right: 8px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .progress-bar-wrap {
+      background: #2a2a3a;
+      border-radius: 999px;
+      height: 6px;
+      overflow: hidden;
+      margin-top: 6px;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #22c55e, #16a34a);
+      border-radius: 999px;
+      transition: width 0.5s ease;
+    }
+
+    #run-status {
+      background: #1a1a24;
+      border: 1px solid #2a2a3a;
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 24px;
+      font-size: 14px;
+      color: #94a3b8;
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-icon">🏋️</div>
+  <div class="header-info">
+    <h1>Jimbe SQA Dashboard</h1>
+    <p>Software Quality Assurance — API & Backend Testing</p>
+  </div>
+  <div class="badge" id="run-time">⏳ Menjalankan tes...</div>
+</div>
+
+<div class="container">
+
+  <div id="run-status">
+    <span class="loading-spinner"></span>
+    Menghubungi API Supabase & API-Ninjas...
+    <div class="progress-bar-wrap" style="margin-top:12px">
+      <div class="progress-bar" id="progress" style="width:0%"></div>
+    </div>
+  </div>
+
+  <div class="summary-grid">
+    <div class="summary-card card-total">
+      <div class="count" id="cnt-total">—</div>
+      <div class="label">Total Tes</div>
+    </div>
+    <div class="summary-card card-pass">
+      <div class="count" id="cnt-pass">—</div>
+      <div class="label">✅ Lulus</div>
+    </div>
+    <div class="summary-card card-fail">
+      <div class="count" id="cnt-fail">—</div>
+      <div class="label">❌ Gagal</div>
+    </div>
+    <div class="summary-card card-warn">
+      <div class="count" id="cnt-warn">—</div>
+      <div class="label">⚠️ Peringatan</div>
+    </div>
+  </div>
+
+  <div id="test-results-container"></div>
+
+</div>
+
+<div class="footer">
+  Jimbe SQA Report · UAS Praktikum PAB · Muhammad Rafly Irhandy · Teknik Informatika – Universitas Kuningan
+</div>
+
+<script>
+const SUPABASE_URL = 'https://swevalpcgxuzjoflbjjq.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3ZXZhbHBjZ3h1empvZmxiampxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2MDgyNTksImV4cCI6MjA5NzE4NDI1OX0.trNYig8Gg1gpiWtvdtzJMqtMR6JxE5mI9BZ8hnV8ydI';
+const API_NINJAS_KEY = '[YOUR_API_NINJAS_KEY]';
+
+let results = [];
+
+function addResult(group, name, status, details, body) {
+  results.push({ group, name, status, details, body });
+  renderResults();
+  updateProgress();
+}
+
+function updateProgress() {
+  const pct = Math.min(100, (results.length / 14) * 100);
+  document.getElementById('progress').style.width = pct + '%';
+}
+
+function renderResults() {
+  const pass = results.filter(r => r.status === 'pass').length;
+  const fail = results.filter(r => r.status === 'fail').length;
+  const warn = results.filter(r => r.status === 'warn').length;
+
+  document.getElementById('cnt-total').textContent = results.length;
+  document.getElementById('cnt-pass').textContent = pass;
+  document.getElementById('cnt-fail').textContent = fail;
+  document.getElementById('cnt-warn').textContent = warn;
+
+  const groups = [...new Set(results.map(r => r.group))];
+  const container = document.getElementById('test-results-container');
+  container.innerHTML = '';
+
+  const icons = {
+    'Auth API': '🔐',
+    'Member API (Postgrest)': '👥',
+    'Exercises API (API-Ninjas)': '💪',
+    'SQA Code Review': '🔍',
+  };
+
+  groups.forEach(group => {
+    const groupResults = results.filter(r => r.group === group);
+    const groupEl = document.createElement('div');
+    groupEl.className = 'test-group';
+    groupEl.innerHTML = `
+      <div class="section-title">
+        <span>${icons[group] || '🧪'}</span>
+        ${group}
+        <small style="color:#64748b;font-size:13px;font-weight:400;margin-left:auto">
+          ${groupResults.filter(r=>r.status==='pass').length}/${groupResults.length} lulus
+        </small>
+      </div>
+    `;
+
+    groupResults.forEach((r, idx) => {
+      const id = `detail-${group.replace(/\s/g,'-')}-${idx}`;
+      const dotClass = r.status === 'pass' ? 'dot-pass' : r.status === 'fail' ? 'dot-fail' : r.status === 'warn' ? 'dot-warn' : 'dot-info';
+      const badgeClass = r.status === 'pass' ? 'badge-pass' : r.status === 'fail' ? 'badge-fail' : r.status === 'warn' ? 'badge-warn' : 'badge-info';
+      const badgeText = r.status === 'pass' ? 'PASS' : r.status === 'fail' ? 'FAIL' : r.status === 'warn' ? 'WARN' : 'INFO';
+
+      let detailsHtml = '';
+      if (r.details) {
+        Object.entries(r.details).forEach(([k, v]) => {
+          const valClass = (k.toLowerCase().includes('status') && (v===200||v===201||v===204)) ? 'success'
+            : (k.toLowerCase().includes('status') && v >= 400) ? 'error'
+            : (k.toLowerCase().includes('error') || k.toLowerCase().includes('masalah')) ? 'error'
+            : (k.toLowerCase().includes('saran') || k.toLowerCase().includes('warning')) ? 'warn'
+            : '';
+          detailsHtml += `<div class="detail-row"><span class="detail-label">${k}</span><span class="detail-value ${valClass}">${v}</span></div>`;
+        });
+      }
+      if (r.body) {
+        detailsHtml += `<pre class="response-body">${escHtml(typeof r.body === 'string' ? r.body : JSON.stringify(r.body, null, 2))}</pre>`;
+      }
+
+      const item = document.createElement('div');
+      item.className = `test-item`;
+      item.innerHTML = `
+        <div class="test-header" onclick="toggle('${id}', this.closest('.test-item'))">
+          <span class="status-dot ${dotClass}"></span>
+          <span class="test-name">${r.name}</span>
+          <span class="test-badge ${badgeClass}">${badgeText}</span>
+          <span class="toggle-arrow">▾</span>
+        </div>
+        <div class="test-details" id="${id}">
+          ${detailsHtml}
+        </div>
+      `;
+      groupEl.appendChild(item);
+    });
+
+    container.appendChild(groupEl);
+  });
+}
+
+function toggle(id, item) {
+  const el = document.getElementById(id);
+  el.classList.toggle('open');
+  item.classList.toggle('open');
+}
+
+function escHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+async function runTests() {
+  const startTime = Date.now();
+
+  // ======== GROUP 1: AUTH API ========
+  // TC-AUTH-01: Supabase Health Check
+  try {
+    const r = await fetch(`${SUPABASE_URL}/auth/v1/health`, {
+      headers: { 'apikey': SUPABASE_KEY }
+    });
+    const body = await r.json();
+    addResult('Auth API', 'TC-AUTH-01: Supabase Health Check', r.ok ? 'pass' : 'fail', {
+      'HTTP Status': r.status,
+      'Endpoint': `${SUPABASE_URL}/auth/v1/health`,
+      'Response': r.ok ? 'Server berjalan normal' : 'Server tidak merespons dengan benar'
+    }, body);
+  } catch(e) {
+    addResult('Auth API', 'TC-AUTH-01: Supabase Health Check', 'fail', { 'Error': e.message }, null);
+  }
+
+  // TC-AUTH-02: Login dengan credential valid (pakai test account yang mungkin ada)
+  try {
+    const r = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ email: 'test@test.com', password: 'testpass123' })
+    });
+    const body = await r.json();
+    if (r.status === 200 && body.access_token) {
+      addResult('Auth API', 'TC-AUTH-02: Login dengan Email & Password', 'pass', {
+        'HTTP Status': r.status,
+        'User Email': body.user?.email || '-',
+        'Token Diterima': body.access_token ? '✅ Ya' : '❌ Tidak',
+        'Token Type': body.token_type || '-',
+      }, { access_token: body.access_token ? '[TOKEN TERSEMBUNYI]' : null, user: body.user });
+    } else {
+      addResult('Auth API', 'TC-AUTH-02: Login dengan Email & Password', 'warn', {
+        'HTTP Status': r.status,
+        'Keterangan': r.status === 400 ? 'Kredensial test tidak ditemukan (ekspektasi normal)' : 'Login gagal',
+        'Error': body.error_description || body.msg || body.message || '-',
+      }, body);
+    }
+  } catch(e) {
+    addResult('Auth API', 'TC-AUTH-02: Login dengan Email & Password', 'fail', { 'Error': e.message }, null);
+  }
+
+  // TC-AUTH-03: Login dengan email kosong (validasi negatif)
+  try {
+    const r = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+      method: 'POST',
+      headers: { 'apikey': SUPABASE_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: '', password: '' })
+    });
+    const body = await r.json();
+    const passed = r.status >= 400;
+    addResult('Auth API', 'TC-AUTH-03: Login Email Kosong (Validasi Negatif)', passed ? 'pass' : 'fail', {
+      'HTTP Status': r.status,
+      'Ekspektasi': 'HTTP 4xx (Error)',
+      'Hasil': passed ? '✅ API menolak request kosong' : '❌ API menerima request tidak valid',
+      'Error': body.error_description || body.msg || '-',
+    }, body);
+  } catch(e) {
+    addResult('Auth API', 'TC-AUTH-03: Login Email Kosong (Validasi Negatif)', 'fail', { 'Error': e.message }, null);
+  }
+
+  // TC-AUTH-04: Register email yang sudah terdaftar (duplikat)
+  try {
+    const r = await fetch(`${SUPABASE_URL}/auth/v1/signup`, {
+      method: 'POST',
+      headers: { 'apikey': SUPABASE_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: 'test@test.com', password: 'testpass123' })
+    });
+    const body = await r.json();
+    // Supabase bisa return 200 (email confirmation) atau 422 (user sudah ada)
+    const isHandled = r.status === 200 || r.status === 422 || r.status === 400;
+    addResult('Auth API', 'TC-AUTH-04: Register Duplikat Email', isHandled ? 'pass' : 'warn', {
+      'HTTP Status': r.status,
+      'Keterangan': r.status === 200 ? 'Supabase mengirim konfirmasi email (normal)' : r.status === 422 ? 'Email sudah terdaftar — ditolak dengan benar' : 'Response tidak terduga',
+    }, body);
+  } catch(e) {
+    addResult('Auth API', 'TC-AUTH-04: Register Duplikat Email', 'fail', { 'Error': e.message }, null);
+  }
+
+  // ======== GROUP 2: MEMBER API ========
+  // TC-MBR-01: Ambil semua data member tanpa auth (harus ditolak)
+  try {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/members?select=*`, {
+      headers: { 'apikey': SUPABASE_KEY }
+    });
+    const body = await r.json();
+    // RLS (Row Level Security) aktif jika 401, atau tanpa RLS jika 200
+    if (r.status === 200) {
+      addResult('Member API (Postgrest)', 'TC-MBR-01: Ambil Data Members (Tanpa Auth)', 'warn', {
+        'HTTP Status': r.status,
+        'Jumlah Data': Array.isArray(body) ? body.length : '-',
+        'Peringatan': '⚠️ RLS (Row Level Security) belum diaktifkan — data bisa diakses tanpa login!',
+        'Saran': 'Aktifkan RLS di Supabase Dashboard untuk tabel "members"',
+      }, Array.isArray(body) ? body.slice(0, 3) : body);
+    } else {
+      addResult('Member API (Postgrest)', 'TC-MBR-01: Ambil Data Members (Tanpa Auth)', 'pass', {
+        'HTTP Status': r.status,
+        'Hasil': '✅ RLS aktif — akses tanpa auth ditolak dengan benar',
+      }, body);
+    }
+  } catch(e) {
+    addResult('Member API (Postgrest)', 'TC-MBR-01: Ambil Data Members (Tanpa Auth)', 'fail', { 'Error': e.message }, null);
+  }
+
+  // TC-MBR-02: Cek struktur tabel members (melalui head request)
+  try {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/members?select=*&limit=1`, {
+      headers: { 'apikey': SUPABASE_KEY, 'Prefer': 'count=none' }
+    });
+    const ct = r.headers.get('content-type') || '';
+    addResult('Member API (Postgrest)', 'TC-MBR-02: Cek Endpoint Tabel Members', r.status !== 404 && r.status !== 500 ? 'pass' : 'fail', {
+      'HTTP Status': r.status,
+      'Content-Type': ct,
+      'Tabel Ditemukan': r.status !== 404 ? '✅ Tabel "members" ada di Supabase' : '❌ Tabel tidak ditemukan',
+    }, null);
+  } catch(e) {
+    addResult('Member API (Postgrest)', 'TC-MBR-02: Cek Endpoint Tabel Members', 'fail', { 'Error': e.message }, null);
+  }
+
+  // TC-MBR-03: Insert member tanpa auth (harus ditolak jika RLS aktif)
+  try {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/members`, {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify({
+        nama_lengkap: 'Test SQA Member',
+        nomor_hp: '081234567890',
+        tanggal_berakhir_member: '2026-07-22'
+      })
+    });
+    const txt = await r.text();
+    if (r.status === 201 || r.status === 200) {
+      addResult('Member API (Postgrest)', 'TC-MBR-03: Insert Member Baru (Tanpa Auth)', 'warn', {
+        'HTTP Status': r.status,
+        'Peringatan': '⚠️ INSERT berhasil tanpa auth — RLS belum melindungi data!',
+        'Saran': 'Aktifkan RLS dan buat policy untuk INSERT',
+      }, txt || '(empty body)');
+    } else {
+      addResult('Member API (Postgrest)', 'TC-MBR-03: Insert Member Baru (Tanpa Auth)', 'pass', {
+        'HTTP Status': r.status,
+        'Hasil': '✅ INSERT ditolak tanpa autentikasi — RLS berfungsi',
+      }, txt);
+    }
+  } catch(e) {
+    addResult('Member API (Postgrest)', 'TC-MBR-03: Insert Member Baru (Tanpa Auth)', 'fail', { 'Error': e.message }, null);
+  }
+
+  // TC-MBR-04: Cek tabel transactions
+  try {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/transactions?select=*&limit=1`, {
+      headers: { 'apikey': SUPABASE_KEY }
+    });
+    const isOk = r.status !== 500;
+    addResult('Member API (Postgrest)', 'TC-MBR-04: Cek Tabel Transactions (Fitur Payment)', isOk ? 'warn' : 'fail', {
+      'HTTP Status': r.status,
+      'Status Fitur': r.status === 404 ? '⚠️ Tabel "transactions" belum dibuat' : r.status === 200 ? '✅ Tabel ada (tapi fitur belum diimplementasikan)' : '⚠️ Perlu dicek',
+      'Keterangan': 'Fitur Catat Pembayaran di MainActivity hanya menampilkan Toast "belum tersedia"',
+    }, null);
+  } catch(e) {
+    addResult('Member API (Postgrest)', 'TC-MBR-04: Cek Tabel Transactions (Fitur Payment)', 'warn', { 'Error': e.message }, null);
+  }
+
+  // ======== GROUP 3: EXERCISES API ========
+  // TC-EXR-01: Cek API-Ninjas dengan placeholder key
+  try {
+    const r = await fetch(`https://api.api-ninjas.com/v1/exercises`, {
+      headers: { 'X-Api-Key': API_NINJAS_KEY }
+    });
+    const body = await r.text();
+    const isPlaceholder = API_NINJAS_KEY === '[YOUR_API_NINJAS_KEY]';
+    addResult('Exercises API (API-Ninjas)', 'TC-EXR-01: Katalog Workout — API Key Check', 'fail', {
+      'HTTP Status': r.status,
+      'API Key': isPlaceholder ? '❌ PLACEHOLDER — belum diisi' : '(key tersembunyi)',
+      'Masalah': isPlaceholder ? 'API_KEY masih "[YOUR_API_NINJAS_KEY]" di WorkoutKatalogActivity.kt' : 'Key sudah diisi',
+      'Dampak': 'Fitur Katalog Workout TIDAK AKAN BERFUNGSI',
+      'Saran': 'Daftar di https://api-ninjas.com, dapatkan API key, isi di WorkoutKatalogActivity.kt',
+    }, body.substring(0, 500));
+  } catch(e) {
+    addResult('Exercises API (API-Ninjas)', 'TC-EXR-01: Katalog Workout — API Key Check', 'fail', {
+      'Masalah': 'API Key adalah placeholder "[YOUR_API_NINJAS_KEY]"',
+      'Error': e.message,
+    }, null);
+  }
+
+  // TC-EXR-02: Cek URL endpoint API-Ninjas (tanpa key)
+  try {
+    const r = await fetch(`https://api.api-ninjas.com/v1/exercises`, {
+      headers: { 'X-Api-Key': 'invalid_key_for_testing' }
+    });
+    addResult('Exercises API (API-Ninjas)', 'TC-EXR-02: Endpoint API-Ninjas Reachable', r.status !== 0 ? 'pass' : 'fail', {
+      'HTTP Status': r.status,
+      'Endpoint': 'https://api.api-ninjas.com/v1/exercises',
+      'Server Reachable': '✅ Server bisa diakses',
+      'Auth Required': r.status === 401 || r.status === 403 ? '✅ Ya (butuh API key valid)' : 'Tidak diketahui',
+    }, null);
+  } catch(e) {
+    addResult('Exercises API (API-Ninjas)', 'TC-EXR-02: Endpoint API-Ninjas Reachable', 'warn', {
+      'Keterangan': 'Tidak bisa mengakses API-Ninjas (mungkin CORS dari browser)',
+      'Error': e.message,
+    }, null);
+  }
+
+  // ======== GROUP 4: CODE REVIEW ========
+  const codeIssues = [
+    {
+      name: 'TC-CODE-01: CoroutineScope Memory Leak (6 Activity)',
+      status: 'fail',
+      details: {
+        'Masalah': 'CoroutineScope(Dispatchers.IO) digunakan di 6 Activity tanpa di-cancel',
+        'File Terdampak': 'LoginActivity, RegisterActivity, MainActivity, MemberListActivity, MemberFormActivity, WorkoutKatalogActivity',
+        'Dampak': 'Memory leak & potential crash saat Activity destroyed',
+        'Saran': 'Ganti dengan lifecycleScope.launch(Dispatchers.IO)',
+      }
+    },
+    {
+      name: 'TC-CODE-02: API Key Hardcoded di Source Code',
+      status: 'fail',
+      details: {
+        'Masalah': 'Supabase URL & Key ditulis langsung di SupabaseClient.kt',
+        'Risiko': 'Siapa pun yang melihat source code bisa akses database',
+        'Saran': 'Pindahkan ke local.properties + BuildConfig',
+      }
+    },
+    {
+      name: 'TC-CODE-03: API-Ninjas Key Masih Placeholder',
+      status: 'fail',
+      details: {
+        'Masalah': 'API_KEY = "[YOUR_API_NINJAS_KEY]" di WorkoutKatalogActivity.kt baris 21',
+        'Dampak': 'Fitur Katalog Workout tidak berfungsi sama sekali',
+        'Saran': 'Isi dengan API key dari https://api-ninjas.com',
+      }
+    },
+    {
+      name: 'TC-CODE-04: Spasi Ekstra di Class Declaration',
+      status: 'fail',
+      details: {
+        'Masalah': 'class                                   MainActivity (baris 14 MainActivity.kt)',
+        'Dampak': 'Code formatting sangat buruk',
+        'Saran': 'Hapus spasi berlebihan menjadi: class MainActivity',
+      }
+    },
+    {
+      name: 'TC-CODE-05: Handler Deprecated di SplashActivity',
+      status: 'warn',
+      details: {
+        'Masalah': 'Handler(Looper.getMainLooper()).postDelayed() deprecated sejak API 30',
+        'Saran': 'Ganti dengan: lifecycleScope.launch { delay(2000); checkAuth() }',
+      }
+    },
+    {
+      name: 'TC-CODE-06: SplashActivity Tidak Menggunakan ViewBinding',
+      status: 'warn',
+      details: {
+        'Masalah': 'setContentView(R.layout.activity_splash) — inkonsisten dengan Activity lain',
+        'Saran': 'Gunakan ViewBinding seperti Activity lainnya',
+      }
+    },
+    {
+      name: 'TC-CODE-07: Retrofit Dibuat Ulang Setiap Fetch',
+      status: 'warn',
+      details: {
+        'Masalah': 'Retrofit.Builder() dipanggil di dalam fetchWorkouts() bukan sebagai singleton',
+        'Dampak': 'Pemborosan memori dan waktu inisialisasi',
+        'Saran': 'Jadikan Retrofit instance sebagai property level class dengan lazy',
+      }
+    },
+    {
+      name: 'TC-CODE-08: File Layout Orphan (activity_supabase_client.xml)',
+      status: 'warn',
+      details: {
+        'Masalah': 'File activity_supabase_client.xml tidak digunakan oleh Activity manapun',
+        'Keterangan': 'SupabaseClient adalah object (singleton), bukan Activity',
+        'Saran': 'Hapus file tersebut dari direktori res/layout',
+      }
+    },
+  ];
+
+  codeIssues.forEach(issue => {
+    addResult('SQA Code Review', issue.name, issue.status, issue.details, null);
+  });
+
+  // Done
+  const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+  document.getElementById('run-status').innerHTML = `✅ Semua tes selesai dalam <strong>${elapsed} detik</strong>`;
+  document.getElementById('progress').style.width = '100%';
+  document.getElementById('progress').style.background = 'linear-gradient(90deg, #22c55e, #16a34a)';
+
+  const pass = results.filter(r => r.status === 'pass').length;
+  const fail = results.filter(r => r.status === 'fail').length;
+  const total = results.length;
+  document.getElementById('run-time').textContent = `${pass}/${total} Lulus · ${elapsed}s`;
+}
+
+window.onload = runTests;
+</script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+{
+  "name": "jimbe-sqa-playwright",
+  "version": "1.0.0",
+  "description": "SQA Testing for Jimbe Android App using Playwright",
+  "scripts": {
+    "test": "playwright test",
+    "test:report": "playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.45.0"
+  }
+}

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@android:color/white"
+    android:padding="24dp">
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:hint="Pilih Tanggal Latihan"
+        app:boxStrokeColor="@color/sage_text_primary"
+        app:hintTextColor="@color/sage_text_primary">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etTanggal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="false"
+            android:clickable="true"
+            android:textColor="@color/sage_text_primary" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:hint="Beban Maksimal Hari Ini (kg)"
+        app:boxStrokeColor="@color/sage_text_primary"
+        app:hintTextColor="@color/sage_text_primary">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etBeban"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:textColor="@color/sage_text_primary" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:hint="Total Repetisi Sesi Ini"
+        app:boxStrokeColor="@color/sage_text_primary"
+        app:hintTextColor="@color/sage_text_primary">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etReps"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:textColor="@color/sage_text_primary" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Durasi Latihan (Menit)"
+        app:boxStrokeColor="@color/sage_text_primary"
+        app:hintTextColor="@color/sage_text_primary">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etDurasi"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:textColor="@color/sage_text_primary" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+</LinearLayout>

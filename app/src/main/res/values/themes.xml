@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.Jimbe" parent="Theme.Material3.Light.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <item name="colorPrimary">@color/jimbe_primary</item>
+        <item name="colorSecondary">@color/jimbe_secondary</item>
+        <item name="android:colorBackground">@color/jimbe_background</item>
+        <item name="colorSurface">@color/jimbe_surface</item>
+        <item name="android:textColorPrimary">@color/jimbe_text_primary</item>
+        <item name="android:textColorSecondary">@color/jimbe_text_secondary</item>
+    </style>
+
+    <style name="Theme.Jimbe" parent="Base.Theme.Jimbe" />
+    
+    <style name="Theme.Jimbe.NoActionBar" parent="Theme.Jimbe">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+</resources>

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "109970094152",
+    "project_id": "jimbe-databse",
+    "storage_bucket": "jimbe-databse.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:109970094152:android:7ba8107b3c08bac925007d",
+        "android_client_info": {
+          "package_name": "com.rf.jimbe"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA7dXvOuHA4PIhRFgeABjl0uqk0eQx8IJg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

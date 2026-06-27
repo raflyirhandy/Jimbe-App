@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Jimbe</string>
+    <string name="stat_title">Statistik Latihan</string>
+    <string name="stat_last_weight">Beban Angkatan Terakhir</string>
+    <string name="stat_default_kg">0 kg</string>
+    <string name="stat_recent_summary">Ringkasan Sesi Terbaru</string>
+    <string name="stat_total_reps">Total Repetisi</string>
+    <string name="stat_default_reps">0 Reps</string>
+    <string name="stat_data_inputted">Data Terinput</string>
+    <string name="stat_default_days">0 Hari</string>
+    <string name="stat_history_title">Histori Progres Latihan</string>
+</resources>

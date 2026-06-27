@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_sage_gradient">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="28dp"
+        android:gravity="center_horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="JIMBE FITNESS"
+            android:textColor="@color/sage_text_primary"
+            android:textSize="32sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Pilih jalur masuk latihan kamu"
+            android:textColor="@color/sage_text_secondary"
+            android:textSize="14sp"
+            android:layout_marginBottom="48dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnToLogin"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="Masuk Akun"
+            android:textColor="@android:color/white"
+            app:backgroundTint="#FF8A5C"
+            app:cornerRadius="12dp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnToRegister"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="Daftar Akun Baru"
+            android:textColor="#FF8A5C"
+            app:backgroundTint="@android:color/white"
+            app:strokeColor="#FF8A5C"
+            app:strokeWidth="1dp"
+            app:cornerRadius="12dp"
+            android:textStyle="bold"
+            android:layout_marginBottom="24dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="atau"
+            android:textColor="@color/sage_text_secondary"
+            android:textSize="14sp"
+            android:layout_marginBottom="24dp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnAsGuest"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="Masuk Sebagai Tamu"
+            android:textColor="@android:color/white"
+            app:backgroundTint="@color/sage_nav_dark"
+            app:cornerRadius="12dp"
+            android:textStyle="bold"/>
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
