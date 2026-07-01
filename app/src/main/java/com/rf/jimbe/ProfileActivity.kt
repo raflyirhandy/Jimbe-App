@@ -32,6 +32,7 @@ class ProfileActivity : AppCompatActivity() {
         }
 
         // Inisialisasi ID komponen TextView Read-Only
+        val tvProfileTitle = findViewById<TextView>(R.id.tvProfileTitle)
         val tvProfileEmail = findViewById<TextView>(R.id.tvProfileEmail)
         val tvProfileUID = findViewById<TextView>(R.id.tvProfileUID)
         val tvProfilePhone = findViewById<TextView>(R.id.tvProfilePhone)
@@ -46,37 +47,65 @@ class ProfileActivity : AppCompatActivity() {
         tvProfileEmail.text = currentUser.email
         tvProfileUID.text = currentUser.uid
 
-        // Tarik data registrasi awal dari path "members" di Firebase
-        database.child("members").child(currentUser.uid).get().addOnSuccessListener { snapshot ->
-            if (snapshot.exists()) {
-                val phone = snapshot.child("nomor_hp").value?.toString() ?: "Belum Mengisi"
-                val address = snapshot.child("alamat").value?.toString() ?: "Belum Mengisi"
+        var isTrainer = false
+
+        // Tentukan apakah user aktif adalah Trainer atau Member
+        database.child("trainers").child(currentUser.uid).get().addOnSuccessListener { snapshotTrainer ->
+            if (snapshotTrainer.exists()) {
+                isTrainer = true
+                tvProfileTitle.text = "Profil Trainer JIMBE"
+                val phone = snapshotTrainer.child("nomor_hp").value?.toString() ?: "Belum Mengisi"
+                val address = snapshotTrainer.child("alamat").value?.toString() ?: "Belum Mengisi"
 
                 tvProfilePhone.text = phone
                 tvProfileAddress.text = address
+            } else {
+                tvProfileTitle.text = "Profil Member JIMBE"
+                database.child("members").child(currentUser.uid).get().addOnSuccessListener { snapshotMember ->
+                    if (snapshotMember.exists()) {
+                        val phone = snapshotMember.child("nomor_hp").value?.toString() ?: "Belum Mengisi"
+                        val address = snapshotMember.child("alamat").value?.toString() ?: "Belum Mengisi"
+
+                        tvProfilePhone.text = phone
+                        tvProfileAddress.text = address
+                    }
+                }
             }
         }.addOnFailureListener {
+            tvProfileTitle.text = "Profil Member JIMBE"
             Toast.makeText(this, "Gagal memuat informasi akun", Toast.LENGTH_SHORT).show()
         }
 
         // Logika Klik Menu Navigasi Bawah
         ivHomeNav.setOnClickListener {
-            startActivity(Intent(this, MainActivity::class.java))
+            if (isTrainer) {
+                startActivity(Intent(this, TrainerActivity::class.java))
+            } else {
+                startActivity(Intent(this, MainActivity::class.java))
+            }
             finish()
         }
         ivStatisticNav.setOnClickListener {
-            startActivity(Intent(this, StatisticActivity::class.java))
+            if (isTrainer) {
+                startActivity(Intent(this, SelectMemberParamActivity::class.java))
+            } else {
+                startActivity(Intent(this, StatisticActivity::class.java))
+            }
             finish()
         }
         ivChatNav.setOnClickListener {
-            startActivity(Intent(this, TrainerListActivity::class.java))
+            if (isTrainer) {
+                startActivity(Intent(this, MemberListActivity::class.java))
+            } else {
+                startActivity(Intent(this, TrainerListActivity::class.java))
+            }
             finish()
         }
 
         // Fungsi Tombol Keluar Akun
         btnLogout.setOnClickListener {
             auth.signOut()
-            val intent = Intent(this, LoginActivity::class.java)
+            val intent = Intent(this, WelcomeActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
             finish()

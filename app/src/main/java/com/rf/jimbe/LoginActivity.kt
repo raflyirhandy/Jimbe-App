@@ -92,4 +92,13 @@ class LoginActivity : AppCompatActivity() {
             finish()
         }
     }
+
+    override fun onBackPressed() {
+        if (isTaskRoot) {
+            startActivity(Intent(this, WelcomeActivity::class.java))
+            finish()
+        } else {
+            super.onBackPressed()
+        }
+    }
 }

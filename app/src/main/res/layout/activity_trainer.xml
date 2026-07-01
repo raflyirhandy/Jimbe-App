@@ -111,17 +111,35 @@
                 android:layout_width="0dp"
                 android:layout_height="26dp"
                 android:layout_weight="1"
-                android:src="@android:drawable/ic_menu_sort_by_size"
+                android:src="@drawable/baseline_insert_chart_24"
                 app:tint="@color/sage_text_secondary"
                 android:contentDescription="@null" />
-            <ImageView
-                android:id="@+id/ivChatNav"
+            <FrameLayout
                 android:layout_width="0dp"
-                android:layout_height="26dp"
-                android:layout_weight="1"
-                android:src="@drawable/ic_chat"
-                app:tint="@color/sage_text_secondary"
-                android:contentDescription="@null" />
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+                <ImageView
+                    android:id="@+id/ivChatNav"
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_chat"
+                    app:tint="@color/sage_text_secondary"
+                    android:contentDescription="@null" />
+                <TextView
+                    android:id="@+id/tvChatBadge"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/bg_badge"
+                    android:gravity="center"
+                    android:textColor="@android:color/white"
+                    android:textSize="9sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+            </FrameLayout>
             <ImageView
                 android:id="@+id/ivProfileNav"
                 android:layout_width="0dp"

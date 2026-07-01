@@ -37,6 +37,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
+            android:orientation="horizontal"
             android:padding="16dp">
             <ImageView
                 android:layout_width="45dp"
@@ -46,10 +47,11 @@
                 android:src="@drawable/ic_default_avatar"
                 app:tint="@android:color/white" />
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_marginStart="16dp">
+                android:layout_marginStart="16dp"
+                android:layout_weight="1">
                 <TextView
                     android:id="@+id/tvNamaTrainer1"
                     android:layout_width="wrap_content"
@@ -65,6 +67,17 @@
                     android:textColor="@color/sage_text_secondary"
                     android:textSize="12sp"/>
             </LinearLayout>
+            <TextView
+                android:id="@+id/tvTrainerBadge1"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/bg_badge"
+                android:gravity="center"
+                android:textColor="@android:color/white"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:visibility="gone" />
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
@@ -81,6 +94,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
+            android:orientation="horizontal"
             android:padding="16dp">
             <ImageView
                 android:layout_width="45dp"
@@ -90,10 +104,11 @@
                 android:src="@drawable/ic_default_avatar"
                 app:tint="@android:color/white" />
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_marginStart="16dp">
+                android:layout_marginStart="16dp"
+                android:layout_weight="1">
                 <TextView
                     android:id="@+id/tvNamaTrainer2"
                     android:layout_width="wrap_content"
@@ -109,6 +124,17 @@
                     android:textColor="@color/sage_text_secondary"
                     android:textSize="12sp"/>
             </LinearLayout>
+            <TextView
+                android:id="@+id/tvTrainerBadge2"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/bg_badge"
+                android:gravity="center"
+                android:textColor="@android:color/white"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:visibility="gone" />
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 </LinearLayout>

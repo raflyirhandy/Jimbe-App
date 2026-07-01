@@ -69,10 +69,46 @@ class StatisticActivity : AppCompatActivity() {
         val targetUidFromIntent = intent.getStringExtra("TARGET_UID")
         val memberNameFromIntent = intent.getStringExtra("MEMBER_NAME")
 
+        // Inisialisasi tombol back, subtitle, dan bottom nav untuk penyembunyian kondisional
+        val ivBack = findViewById<ImageView>(R.id.ivBack)
+        val cardBottomNav = findViewById<View>(R.id.cardBottomNav)
+        val tvSubtitle = findViewById<TextView>(R.id.tvSubtitle)
+
+        if (memberIdFromIntent != null) {
+            cardBottomNav.visibility = View.GONE
+            ivBack.visibility = View.VISIBLE
+            ivBack.setOnClickListener {
+                finish()
+            }
+        }
+
         // Ambil Data Statistik Real-time dari Firebase
         // Jika memberIdFromIntent ada nilainya, pakai itu. Jika tidak, coba TARGET_UID. Jika null semua, pakai currentUser.uid
         val targetUid = memberIdFromIntent ?: targetUidFromIntent ?: currentUser.uid
         listenToWorkoutStats(targetUid)
+
+        // Tarik data profil member untuk menampilkan Nama & BMI di Subtitle secara dinamis
+        database.child("members").child(targetUid).get().addOnSuccessListener { snapshot ->
+            if (snapshot.exists()) {
+                val memberName = snapshot.child("nama_lengkap").value?.toString() ?: memberNameFromIntent ?: "Member"
+                val bmiData = snapshot.child("bmi_data")
+
+                if (bmiData.exists()) {
+                    val tinggi = bmiData.child("tinggi").value?.toString() ?: "-"
+                    val berat = bmiData.child("berat").value?.toString() ?: "-"
+                    val score = bmiData.child("score").value?.toString() ?: "-"
+                    val status = bmiData.child("status").value?.toString() ?: "-"
+
+                    tvSubtitle.text = "Member: $memberName\nTinggi: $tinggi cm | Berat: $berat kg | BMI: $score ($status)"
+                } else {
+                    tvSubtitle.text = "Member: $memberName\n(Data BMI belum dihitung)"
+                }
+                tvSubtitle.visibility = View.VISIBLE
+            } else if (!memberNameFromIntent.isNullOrEmpty()) {
+                tvSubtitle.text = "Member: $memberNameFromIntent"
+                tvSubtitle.visibility = View.VISIBLE
+            }
+        }
 
         // Opsional: Tampilkan nama member jika sedang dalam mode Trainer
         if (!memberNameFromIntent.isNullOrEmpty()) {

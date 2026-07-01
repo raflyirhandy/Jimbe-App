@@ -163,6 +163,94 @@
                 </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
 
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardWorkoutKatalog"
+                android:layout_width="match_parent"
+                android:layout_height="90dp"
+                android:layout_marginTop="12dp"
+                app:cardBackgroundColor="#FFF3E0"
+                app:cardCornerRadius="24dp"
+                app:strokeWidth="0dp">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="16dp">
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentStart="true">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Katalog Latihan"
+                            android:textColor="#E65100"
+                            android:textSize="15sp"
+                            android:textStyle="bold"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:text="Lihat demo animasi &amp; panduan gerakan"
+                            android:textColor="#F57C00"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+                    <ImageView
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:src="@android:drawable/ic_menu_agenda"
+                        app:tint="#E65100"
+                        android:contentDescription="@null" />
+                </RelativeLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardBMI"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                app:cardBackgroundColor="@color/sage_surface"
+                app:cardCornerRadius="24dp"
+                app:strokeWidth="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="⚖️ Kalkulator BMI (Body Mass Index)"
+                        android:textColor="@color/sage_text_primary"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="8dp" />
+
+                    <TextView
+                        android:id="@+id/tvBMIDetails"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Data BMI belum dihitung. Ketuk tombol di bawah untuk mulai menghitung."
+                        android:textColor="@color/sage_text_secondary"
+                        android:textSize="12sp"
+                        android:layout_marginBottom="12dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnCalculateBMI"
+                        android:layout_width="match_parent"
+                        android:layout_height="45dp"
+                        android:text="Hitung BMI Baru"
+                        android:textColor="@android:color/white"
+                        app:backgroundTint="#FF8A5C"
+                        app:cornerRadius="12dp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
             <!-- FIX TAMPILAN: Mengganti teks Today's Workout menjadi Jadwal Kelas Latihan -->
             <TextView
                 android:layout_width="wrap_content"
@@ -212,17 +300,35 @@
                 android:layout_width="0dp"
                 android:layout_height="26dp"
                 android:layout_weight="1"
-                android:src="@android:drawable/ic_menu_sort_by_size"
+                android:src="@drawable/baseline_insert_chart_24"
                 app:tint="@color/sage_text_secondary"
                 android:contentDescription="@null" />
-            <ImageView
-                android:id="@+id/ivChatNav"
+            <FrameLayout
                 android:layout_width="0dp"
-                android:layout_height="26dp"
-                android:layout_weight="1"
-                android:src="@drawable/ic_chat"
-                app:tint="@color/sage_text_secondary"
-                android:contentDescription="@null" />
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+                <ImageView
+                    android:id="@+id/ivChatNav"
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_chat"
+                    app:tint="@color/sage_text_secondary"
+                    android:contentDescription="@null" />
+                <TextView
+                    android:id="@+id/tvChatBadge"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/bg_badge"
+                    android:gravity="center"
+                    android:textColor="@android:color/white"
+                    android:textSize="9sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+            </FrameLayout>
             <ImageView
                 android:id="@+id/ivProfileNav"
                 android:layout_width="0dp"

@@ -60,12 +60,16 @@ class MainActivity : AppCompatActivity() {
 
         val cardTimer = findViewById<MaterialCardView>(R.id.cardTimer)
         val cardUpdateProgress = findViewById<MaterialCardView>(R.id.cardUpdateProgress)
+        val cardWorkoutKatalog = findViewById<MaterialCardView>(R.id.cardWorkoutKatalog)
         val tvGreeting = findViewById<TextView>(R.id.tvGreeting)
 
         val ivHomeNav = findViewById<ImageView>(R.id.ivHomeNav)
         val ivStatisticNav = findViewById<ImageView>(R.id.ivStatisticNav)
         val ivChatNav = findViewById<ImageView>(R.id.ivChatNav)
         val ivProfileNav = findViewById<ImageView>(R.id.ivProfileNav)
+
+        val tvChatBadge = findViewById<TextView>(R.id.tvChatBadge)
+        listenUnreadMessagesCount(currentUser.uid, tvChatBadge)
 
         // Inisialisasi RecyclerView Jadwal Latihan
         rvJadwalLatihan = findViewById(R.id.rvJadwalLatihan)
@@ -88,6 +92,24 @@ class MainActivity : AppCompatActivity() {
             showUpdateProgressDialog(currentUser.uid)
         }
 
+        cardWorkoutKatalog.setOnClickListener {
+            startActivity(Intent(this, WorkoutKatalogActivity::class.java))
+        }
+
+        val cardBMI = findViewById<MaterialCardView>(R.id.cardBMI)
+        val tvBMIDetails = findViewById<TextView>(R.id.tvBMIDetails)
+        val btnCalculateBMI = findViewById<MaterialButton>(R.id.btnCalculateBMI)
+
+        // Jalankan listener data BMI secara realtime
+        listenBMIData(currentUser.uid, tvBMIDetails)
+
+        btnCalculateBMI.setOnClickListener {
+            startActivity(Intent(this, BmiActivity::class.java))
+        }
+        cardBMI.setOnClickListener {
+            startActivity(Intent(this, BmiActivity::class.java))
+        }
+
         ivHomeNav.setOnClickListener {
             Toast.makeText(this, "Anda sedang di Dashboard Utama", Toast.LENGTH_SHORT).show()
         }
@@ -106,6 +128,34 @@ class MainActivity : AppCompatActivity() {
         ivProfileNav.setOnClickListener {
             startActivity(Intent(this, ProfileActivity::class.java))
         }
+    }
+
+    private fun listenUnreadMessagesCount(currentUserId: String, tvChatBadge: TextView) {
+        database.child("chats").addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                var totalUnread = 0
+                for (chatRoomSnapshot in snapshot.children) {
+                    val chatRoomId = chatRoomSnapshot.key ?: continue
+                    if (chatRoomId.contains(currentUserId)) {
+                        for (messageSnapshot in chatRoomSnapshot.children) {
+                            val senderId = messageSnapshot.child("senderId").value?.toString()
+                            val read = messageSnapshot.child("read").value as? Boolean ?: false
+                            if (senderId != null && senderId != currentUserId && !read) {
+                                totalUnread++
+                            }
+                        }
+                    }
+                }
+                if (totalUnread > 0) {
+                    tvChatBadge.text = totalUnread.toString()
+                    tvChatBadge.visibility = View.VISIBLE
+                } else {
+                    tvChatBadge.visibility = View.GONE
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {}
+        })
     }
 
     // Deklarasi RecyclerView untuk Jadwal Latihan (menggunakan KelasLatihan)
@@ -310,4 +360,32 @@ class MainActivity : AppCompatActivity() {
             .setNegativeButton("Batal", null)
             .show()
     }
+
+    private fun listenBMIData(uid: String, tvBMIDetails: TextView) {
+        database.child("members").child(uid).child("bmi_data").addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    val tinggi = snapshot.child("tinggi").value?.toString() ?: "-"
+                    val berat = snapshot.child("berat").value?.toString() ?: "-"
+                    val score = snapshot.child("score").value?.toString() ?: "-"
+                    val status = snapshot.child("status").value?.toString() ?: "-"
+                    val targetKalori = snapshot.child("targetKalori").value?.toString() ?: "-"
+                    val goal = snapshot.child("goal").value?.toString() ?: "-"
+                    val bmr = snapshot.child("bmr").value?.toString() ?: "-"
+                    val tdee = snapshot.child("tdee").value?.toString() ?: "-"
+                    val tanggal = snapshot.child("tanggal").value?.toString() ?: "-"
+
+                    tvBMIDetails.text = "Tinggi: $tinggi cm  •  Berat: $berat kg\nBMI Score: $score ($status)\nTarget: $goal ($targetKalori kcal)\nBMR: $bmr kcal  •  TDEE: $tdee kcal\nTerakhir Update: $tanggal"
+                } else {
+                    tvBMIDetails.text = "Data BMI & Nutrisi belum dihitung. Ketuk tombol di bawah untuk mulai menghitung."
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(this@MainActivity, "Gagal memuat data BMI", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+
 }

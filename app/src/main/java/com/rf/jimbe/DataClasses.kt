@@ -17,7 +17,8 @@ data class ExerciseWrapper(
 data class MessageModel(
     val senderId: String = "",
     val message: String = "",
-    val timestamp: Long = 0
+    val timestamp: Long = 0,
+    val read: Boolean = false
 )
 
 data class Member(

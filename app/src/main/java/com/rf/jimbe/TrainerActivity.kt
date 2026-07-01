@@ -41,6 +41,11 @@ class TrainerActivity : AppCompatActivity() {
         val ivChatNav = findViewById<ImageView>(R.id.ivChatNav)
         val ivProfileNav = findViewById<ImageView>(R.id.ivProfileNav)
 
+        val tvChatBadge = findViewById<TextView>(R.id.tvChatBadge)
+        if (currentTrainer != null) {
+            listenUnreadMessagesCount(currentTrainer.uid, tvChatBadge)
+        }
+
         tvWelcomeTrainer.text = "Selamat Datang Trainer,\n${currentTrainer?.email?.substringBefore("@")?.uppercase() ?: "TRAINER"}!"
 
         // Konfigurasi RecyclerView
@@ -70,6 +75,34 @@ class TrainerActivity : AppCompatActivity() {
             // Buka ProfileActivity (dimana logout sekarang berada)
             startActivity(Intent(this, ProfileActivity::class.java))
         }
+    }
+
+    private fun listenUnreadMessagesCount(currentUserId: String, tvChatBadge: TextView) {
+        database.child("chats").addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                var totalUnread = 0
+                for (chatRoomSnapshot in snapshot.children) {
+                    val chatRoomId = chatRoomSnapshot.key ?: continue
+                    if (chatRoomId.contains(currentUserId)) {
+                        for (messageSnapshot in chatRoomSnapshot.children) {
+                            val senderId = messageSnapshot.child("senderId").value?.toString()
+                            val read = messageSnapshot.child("read").value as? Boolean ?: false
+                            if (senderId != null && senderId != currentUserId && !read) {
+                                totalUnread++
+                            }
+                        }
+                    }
+                }
+                if (totalUnread > 0) {
+                    tvChatBadge.text = totalUnread.toString()
+                    tvChatBadge.visibility = android.view.View.VISIBLE
+                } else {
+                    tvChatBadge.visibility = android.view.View.GONE
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {}
+        })
     }
 
     override fun onResume() {

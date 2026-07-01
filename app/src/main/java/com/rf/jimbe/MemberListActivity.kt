@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.rf.jimbe.databinding.ActivityMemberListBinding
@@ -15,6 +16,7 @@ class MemberListActivity : AppCompatActivity() {
 
     // Variabel untuk koneksi ke Realtime Database
     private lateinit var database: DatabaseReference
+    private var unreadCountsMap = HashMap<String, Int>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,6 +31,8 @@ class MemberListActivity : AppCompatActivity() {
         binding.fabAdd.setOnClickListener {
             startActivity(Intent(this, MemberFormActivity::class.java))
         }
+
+        listenAllUnreadCounts()
     }
 
     override fun onResume() {
@@ -82,7 +86,7 @@ class MemberListActivity : AppCompatActivity() {
                     }
 
                     // Kirim data ke RecyclerView Adapter beserta lambda click listener
-                    binding.rvMembers.adapter = MemberAdapter(membersList) { selectedMember ->
+                    val adapter = MemberAdapter(membersList) { selectedMember ->
                         val intent =
                             Intent(this@MemberListActivity, ChatActivity::class.java).apply {
                                 putExtra(
@@ -92,6 +96,8 @@ class MemberListActivity : AppCompatActivity() {
                             }
                         startActivity(intent)
                     }
+                    adapter.updateUnreadCounts(unreadCountsMap)
+                    binding.rvMembers.adapter = adapter
                 }
 
                 override fun onCancelled(error: com.google.firebase.database.DatabaseError) {
@@ -102,5 +108,35 @@ class MemberListActivity : AppCompatActivity() {
                     ).show()
                 }
             })
+    }
+
+    private fun listenAllUnreadCounts() {
+        val currentUserId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        database.child("chats").addValueEventListener(object : com.google.firebase.database.ValueEventListener {
+            override fun onDataChange(snapshot: com.google.firebase.database.DataSnapshot) {
+                unreadCountsMap.clear()
+                for (chatRoomSnapshot in snapshot.children) {
+                    val chatRoomId = chatRoomSnapshot.key ?: continue
+                    if (chatRoomId.contains(currentUserId)) {
+                        val partnerId = chatRoomId.replace(currentUserId, "").replace("_", "")
+                        var unread = 0
+                        for (messageSnapshot in chatRoomSnapshot.children) {
+                            val senderId = messageSnapshot.child("senderId").value?.toString()
+                            val read = messageSnapshot.child("read").value as? Boolean ?: false
+                            if (senderId != null && senderId != currentUserId && !read) {
+                                unread++
+                            }
+                        }
+                        if (unread > 0) {
+                            unreadCountsMap[partnerId] = unread
+                        }
+                    }
+                }
+                val adapter = binding.rvMembers.adapter as? MemberAdapter
+                adapter?.updateUnreadCounts(unreadCountsMap)
+            }
+
+            override fun onCancelled(error: com.google.firebase.database.DatabaseError) {}
+        })
     }
 }

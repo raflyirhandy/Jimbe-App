@@ -1,5 +1,6 @@
 package com.rf.jimbe
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -60,6 +61,7 @@ class RegisterActivity : AppCompatActivity() {
                             // 2. Simpan Profil ke Realtime Database di bawah node "members/UID"
                             database.child("members").child(userId).setValue(memberBaru)
                                 .addOnSuccessListener {
+                                    auth.signOut() // Sign out user agar tidak auto-login setelah registrasi
                                     Toast.makeText(this, "Registrasi Berhasil, silakan Login", Toast.LENGTH_SHORT).show()
                                     finish()
                                 }
@@ -71,6 +73,15 @@ class RegisterActivity : AppCompatActivity() {
                         Toast.makeText(this, "Registrasi Gagal: ${task.exception?.message}", Toast.LENGTH_LONG).show()
                     }
                 }
+        }
+    }
+
+    override fun onBackPressed() {
+        if (isTaskRoot) {
+            startActivity(Intent(this, WelcomeActivity::class.java))
+            finish()
+        } else {
+            super.onBackPressed()
         }
     }
 }

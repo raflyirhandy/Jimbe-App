@@ -22,7 +22,7 @@ class AdminActivity : AppCompatActivity() {
         val currentUser = auth.currentUser
 
         if (currentUser == null) {
-            redirectToLogin()
+            redirectToWelcome()
             return
         }
 
@@ -49,13 +49,13 @@ class AdminActivity : AppCompatActivity() {
 
         binding.cvLogoutAdmin.setOnClickListener {
             auth.signOut()
-            redirectToLogin()
+            redirectToWelcome()
             Toast.makeText(this, "Admin Berhasil Logout", Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun redirectToLogin() {
-        val intent = Intent(this, LoginActivity::class.java)
+    private fun redirectToWelcome() {
+        val intent = Intent(this, WelcomeActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
         finish()

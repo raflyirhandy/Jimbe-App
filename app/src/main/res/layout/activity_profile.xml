@@ -20,6 +20,7 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/tvProfileTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -169,7 +170,7 @@
                 android:layout_height="26dp"
                 android:layout_weight="1"
                 android:contentDescription="@null"
-                android:src="@android:drawable/ic_menu_sort_by_size"
+                android:src="@drawable/baseline_insert_chart_24"
                 app:tint="@color/sage_text_secondary" />
 
             <ImageView

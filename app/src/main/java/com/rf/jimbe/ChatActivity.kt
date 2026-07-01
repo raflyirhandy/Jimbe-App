@@ -20,6 +20,7 @@ class ChatActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        window.statusBarColor = android.graphics.Color.parseColor("#FF8A5C")
         binding = ActivityChatBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -49,6 +50,13 @@ class ChatActivity : AppCompatActivity() {
         binding.rvChat.layoutManager = LinearLayoutManager(this)
         binding.rvChat.adapter = chatAdapter
 
+        // Auto scroll to bottom when keyboard opens / layout resizes
+        binding.rvChat.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
+            if (messageList.isNotEmpty()) {
+                binding.rvChat.scrollToPosition(messageList.size - 1)
+            }
+        }
+
         // 3. LISTEN DATA: Mengambil & Memantau Chat secara Realtime
         listenForMessages()
 
@@ -70,6 +78,10 @@ class ChatActivity : AppCompatActivity() {
                         val message = messageSnapshot.getValue(MessageModel::class.java)
                         if (message != null) {
                             messageList.add(message)
+                            // Jika pesan dari partner dan belum dibaca, tandai sebagai dibaca
+                            if (message.senderId != currentUserId && !message.read) {
+                                messageSnapshot.ref.child("read").setValue(true)
+                            }
                         }
                     }
                     chatAdapter.notifyDataSetChanged()
